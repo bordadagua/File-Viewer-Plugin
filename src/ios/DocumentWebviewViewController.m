@@ -46,16 +46,25 @@
     }
     [self.view addSubview:self.buttonCloseView];
     
+    NSString *jScript = @"var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport'); meta.setAttribute('content', 'width=device-width'); document.getElementsByTagName('head')[0].appendChild(meta);";
+
+    WKUserScript *wkUScript = [[WKUserScript alloc] initWithSource:jScript injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
+    WKUserContentController *wkUController = [[WKUserContentController alloc] init];
+    [wkUController addUserScript:wkUScript];
+
+    WKWebViewConfiguration *wkWebConfig = [[WKWebViewConfiguration alloc] init];
+    wkWebConfig.userContentController = wkUController;
+
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 70, [[UIScreen mainScreen] bounds].size.width, ([[UIScreen mainScreen] bounds].size.height - 70))];
+        self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 70, [[UIScreen mainScreen] bounds].size.width, ([[UIScreen mainScreen] bounds].size.height - 70)) configuration: wkWebConfig  ];
     } else {
-        self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 50, [[UIScreen mainScreen] bounds].size.width, ([[UIScreen mainScreen] bounds].size.height - 50))];
+        self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 50, [[UIScreen mainScreen] bounds].size.width, ([[UIScreen mainScreen] bounds].size.height - 50)) configuration:wkWebConfig];
     }
     [[self.webView scrollView] setContentOffset:CGPointMake(0,500) animated:YES];
-    [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.scrollTo(0.0, 50.0)"]];
     
-    //Enabling zoom for preview
-    self.webView.scalesPageToFit=YES;
+    [self.webView evaluateJavaScript:[NSString stringWithFormat:@"window.scrollTo(0.0, 50.0)"] completionHandler:nil];
+   
     
     //Handle with rotation on iPhoneX
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotated:) name:UIDeviceOrientationDidChangeNotification object:nil];

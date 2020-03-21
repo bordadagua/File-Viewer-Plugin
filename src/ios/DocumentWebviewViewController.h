@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
 @interface DocumentWebviewViewController : UIViewController
 {
-    UIWebView *webView;
+    WKWebView *webView;
 }
-@property (retain, nonatomic) UIWebView *webView;
+@property (retain, nonatomic) WKWebView *webView;
 @property (retain, nonatomic) UIButton *buttonCloseView;
 
 -(void) loadDocumentWithUrl:(NSString *) urlString;
